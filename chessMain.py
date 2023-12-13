@@ -21,7 +21,7 @@ def loadImages():
     for piece in pieces:
         # Transform.scale is used to scale the image such that it's height and width are in accordance with 
         # the square size
-        IMAGES[piece] = py.transform.scale(py.image.load("images/" + piece + ".png")), (SQ_SIZE, SQ_SIZE)
+        IMAGES[piece] = py.transform.scale(py.image.load("images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
     # Note: We can access the images loaded in the dictionary by calling 'IMAGES["wP"]'
     
 '''
@@ -32,6 +32,34 @@ def main():
     clock = py.time.Clock()
     screen.fill(py.Color("white"))
     gs = GameState()
-    print(gs.board)
+    loadImages() # Only run once before the while loop
+    running = True
     
-main()
+    while running:
+        for e in py.event.get():
+            if e.type == py.QUIT:
+                running = False
+        drawGameState(screen, gs)
+        clock.tick(MAX_FPS)
+        py.display.flip()
+        
+'''
+Responsible for rendering all the graphics at the current given gameState
+'''
+def drawGameState(screen, gs):
+    drawBoard(screen) # Draw the squares on the board
+    # drawPieces(screen, gs.board) # Draw pieces on top of those squares
+    
+'''
+Draw the squares on the given board
+'''
+def drawBoard(screen):
+    colors = [py.Color("white"), py.Color("gray")]
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            color = colors[((row + column) % 2)]
+            py.draw.rect(screen, color, py.Rect(column * SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+    
+    
+if __name__ == "__main__":
+    main()
