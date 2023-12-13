@@ -27,7 +27,16 @@ class GameState():
         self.moveLog.append(move) # Add the move made to the move log so it can be manipulated later on
         self.whiteToMove = not self.whiteToMove # Swap the playing team, ie switch between black and white
         
-        
+    '''
+    Undo the last move performed
+    '''
+    def undo(self):
+        if len(self.moveLog) != 0: # Make sure there is a move to undo
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
+            self.whiteToMove = not self.whiteToMove # Switch the turns back
+         
 class Move():
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4,
                    "5": 3, "6": 2, "7": 1, "8": 0}

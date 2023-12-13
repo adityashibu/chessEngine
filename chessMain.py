@@ -40,6 +40,7 @@ def main():
         for e in py.event.get():
             if e.type == py.QUIT:
                 running = False
+            # Mouse click handlers
             elif e.type == py.MOUSEBUTTONDOWN:
                 location = py.mouse.get_pos() # Get the (x, y) coordinates of the mouse pointer
                 column = location[0] // SQ_SIZE 
@@ -58,6 +59,10 @@ def main():
                     
                     sqSelected = () # Reset user clicks
                     playerClicks = []
+            # Key handlers
+            elif e.type == py.KEYDOWN:
+                if e.key == py.K_z: # Undo when the Z key is pressed
+                    gs.undo()
                 
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
