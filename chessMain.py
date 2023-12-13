@@ -3,7 +3,7 @@ This is the main Driver file. It will be responsible for handling user inputs an
 """
 
 import pygame as py
-from chessEngine import GameState
+from chessEngine import GameState, Move
 
 py.init() # Initialize pygame
 WIDTH = HEIGHT = 512 # Define the window size for the pygame engine, 400 also looks good
@@ -34,11 +34,31 @@ def main():
     gs = GameState()
     loadImages() # Only run once before the while loop
     running = True
-    
+    sqSelected = () # Tuple to keep track of the square that has been selected/ ie the last click of the user, and is going to be a tuple of (row, column)
+    playerClicks = [] # Keep track of the positions that the play wants to move from and to, basically 2 tuples, ie [(before), (after)], each tuple being a sqSelected
     while running:
         for e in py.event.get():
             if e.type == py.QUIT:
                 running = False
+            elif e.type == py.MOUSEBUTTONDOWN:
+                location = py.mouse.get_pos() # Get the (x, y) coordinates of the mouse pointer
+                column = location[0] // SQ_SIZE 
+                row = location[1] // SQ_SIZE
+                
+                if sqSelected == (row, column): # Check if the user clicked on the same square twice
+                    sqSelected = ()
+                    playerClicks = [] # Clear the playerClicks
+                else:
+                    sqSelected = (row, column)
+                    playerClicks.append(sqSelected) # Append the positions for both the first and the second click
+                if len(playerClicks) == 2:
+                    move = Move(playerClicks[0], playerClicks[1], gs.board)
+                    print(move.getChessNotation())
+                    gs.makeMove(move)
+                    
+                    sqSelected = () # Reset user clicks
+                    playerClicks = []
+                
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
         py.display.flip()
