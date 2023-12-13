@@ -36,6 +36,20 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
             self.whiteToMove = not self.whiteToMove # Switch the turns back
+            
+    '''
+    Generate all moves considering given checks
+    '''
+    def getValidMoves(self):
+        pass
+    
+    '''
+    Generate all moves without considering checks
+    '''
+    def getAllPossibleMoves(self):
+        pass
+        
+        
          
 class Move():
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4,
