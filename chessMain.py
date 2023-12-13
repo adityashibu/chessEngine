@@ -48,7 +48,7 @@ Responsible for rendering all the graphics at the current given gameState
 '''
 def drawGameState(screen, gs):
     drawBoard(screen) # Draw the squares on the board
-    # drawPieces(screen, gs.board) # Draw pieces on top of those squares
+    drawPieces(screen, gs.board) # Draw pieces on top of those squares
     
 '''
 Draw the squares on the given board
@@ -59,6 +59,16 @@ def drawBoard(screen):
         for column in range(DIMENSION):
             color = colors[((row + column) % 2)]
             py.draw.rect(screen, color, py.Rect(column * SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            
+'''
+Draw the pieces on the board
+'''
+def drawPieces(screen, board):
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            piece = board[row][column]
+            if piece != "--": # This is to check if there is a piece at the given location 
+                screen.blit(IMAGES[piece], py.Rect(column * SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
     
     
 if __name__ == "__main__":
