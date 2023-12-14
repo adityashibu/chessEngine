@@ -32,10 +32,16 @@ def main():
     clock = py.time.Clock()
     screen.fill(py.Color("white"))
     gs = GameState()
+    validMoves = gs.getValidMoves()
+    moveMade = False # Flag for indicating if the user has made a move
+    
+    
     loadImages() # Only run once before the while loop
     running = True
     sqSelected = () # Tuple to keep track of the square that has been selected/ ie the last click of the user, and is going to be a tuple of (row, column)
     playerClicks = [] # Keep track of the positions that the play wants to move from and to, basically 2 tuples, ie [(before), (after)], each tuple being a sqSelected
+    
+    
     while running:
         for e in py.event.get():
             if e.type == py.QUIT:
@@ -55,15 +61,23 @@ def main():
                 if len(playerClicks) == 2:
                     move = Move(playerClicks[0], playerClicks[1], gs.board)
                     print(move.getChessNotation())
-                    gs.makeMove(move)
-                    
+                    if move in validMoves:
+                        gs.makeMove(move)
+                        moveMade = True
                     sqSelected = () # Reset user clicks
                     playerClicks = []
+                    
             # Key handlers
             elif e.type == py.KEYDOWN:
                 if e.key == py.K_z: # Undo when the Z key is pressed
                     gs.undo()
-                
+                    moveMade = True # So that when the player undo's a move, it generates the possible moves after undoing the move
+                    
+        # If a valid move was made then generate all the possible moves for the new gameState
+        if moveMade:
+            validMoves = gs.getValidMoves()
+            moveMade = False
+            
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
         py.display.flip()
