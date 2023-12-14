@@ -15,7 +15,7 @@ class GameState():
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "bP", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         self.whiteToMove = True;
@@ -71,6 +71,12 @@ class GameState():
                 moves.append(Move((row, column), (row - 1, column), self.board))
                 if row == 6 and self.board[row - 2][column] == "--": # Check if two squares infront of the given pawn is empty
                     moves.append(Move((row, column), (row - 2, column), self.board))
+            if column - 1 >= 0: # To make sure that capturing the piece using a pawn towards the left doesn't move it out of the board
+                if self.board[row - 1][column - 1][0] == 'b': # There is an enemy piece to capture
+                    moves.append(Move((row, column), (row - 1, column - 1), self.board))
+            if column + 1 <= 7: # To make sure that capturing the piece using a pawn towards the right doesn't move it out of the board
+                if self.board[row - 1][column + 1][0] == 'b': # There is an enemy piece to capture
+                    moves.append(Move((row, column), (row - 1, column + 1), self.board))
     
     '''
     Get all the possible Rook moves located at the given row and column and add them to the moves list
