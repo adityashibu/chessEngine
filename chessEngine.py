@@ -52,26 +52,30 @@ class GameState():
         for row in range(len(self.board)): # Number of rows on the board
             for column in range(len(self.board[row])): # Number of columns in the given row 
                 turn = self.board[row][column][0] # As the first character of a piece denotes the color thats currently playing
-                if (turn == 'w' and self.whiteToMove) and (turn == 'b' and not self.whiteToMove):
+                if (turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                     piece = self.board[row][column][1]
                     if piece == 'P':
+                        # print("Debug statement")
                         self.getPawnMoves(row, column, moves)
                     elif piece == 'R':
                         self.getRookMoves(row, column, moves)
-                    elif piece == 'B':
-                        self.getBishopMoves(row, column, moves)
         return moves
                         
     '''
     Get all the possible Pawn moves located at the given row and column and add them to the moves list
     '''
-    def getPawnMoves(row, column, moves):
-        pass
+    # White pawns are on row 6 and black pawns are on row 1
+    def getPawnMoves(self, row, column, moves):
+        if self.whiteToMove: # White pawn will move
+            if self.board[row - 1][column] == "--": # If the square infront of the pawn is empty then it's a valid move
+                moves.append(Move((row, column), (row - 1, column), self.board))
+                if row == 6 and self.board[row - 2][column] == "--": # Check if two squares infront of the given pawn is empty
+                    moves.append(Move((row, column), (row - 2, column), self.board))
     
     '''
     Get all the possible Rook moves located at the given row and column and add them to the moves list
     '''
-    def getRookMoves(row, column, moves):
+    def getRookMoves(self, row, column, moves):
         pass
         
          
