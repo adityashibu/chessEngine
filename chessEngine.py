@@ -77,12 +77,41 @@ class GameState():
             if column + 1 <= 7: # To make sure that capturing the piece using a pawn towards the right doesn't move it out of the board
                 if self.board[row - 1][column + 1][0] == 'b': # There is an enemy piece to capture
                     moves.append(Move((row, column), (row - 1, column + 1), self.board))
+                    
+        else: # Black pawn will move
+            if self.board[row + 1][column] == "--": # If the square in front of the pawn is empty then it's a valid move
+                moves.append(Move((row, column), (row + 1, column), self.board))
+                if row == 1 and self.board[row + 2][column] == "--": # Check if two squares in front of the given pawn is empty
+                    moves.append(Move((row, column), (row + 2, column), self.board))
+            if column - 1 >= 0: # To make sure that capturing the piece using a pawn towards the left doesn't move it out of the board
+                if self.board[row + 1][column - 1][0] == 'w': # There is an enemy piece to capture
+                    moves.append(Move((row, column), (row + 1, column - 1), self.board))
+            if column + 1 <= 7: # To make sure that capturing the piece using a pawn towards the right doesn't move it out of the board
+                if self.board[row + 1][column + 1][0] == 'w': # There is an enemy piece to capture
+                    moves.append(Move((row, column), (row + 1, column + 1), self.board))
+                    
     
     '''
     Get all the possible Rook moves located at the given row and column and add them to the moves list
     '''
     def getRookMoves(self, row, column, moves):
-        pass
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1))
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1, 8):
+                endRow = row + d[0] * i 
+                endCol = column + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8: # Basically ensures that the rook moves on the board
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--": # If the ending position is empty then it's a valid move
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
+                        break
+                    else:
+                        break 
+                else:
+                    break
         
          
 class Move():
