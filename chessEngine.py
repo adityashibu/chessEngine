@@ -20,12 +20,19 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         self.whiteToMove = True;
         self.moveLog = []
+        self.whiteKingLocation = (7, 4) # Location to check if the king has been checkmated
+        self.blackKingLocation = (0, 4)
         
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move) # Add the move made to the move log so it can be manipulated later on
         self.whiteToMove = not self.whiteToMove # Swap the playing team, ie switch between black and white
+        # Update king position if it's ever moved
+        if move.pieceMoved == 'wK':
+            self.whiteKingLocation = (move.endRow, move.endCol)
+        elif move.pieceMoved == 'bK':
+            self.whiteKingLocation = (move.endRow, move.endCol)
         
     '''
     Undo the last move performed
@@ -36,12 +43,23 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
             self.whiteToMove = not self.whiteToMove # Switch the turns back
+            # Update king position if it's ever moved
+            if move.pieceMoved == 'wK':
+                self.whiteKingLocation = (move.startRow, move.startCol)
+            elif move.pieceMoved == 'bK':
+                self.whiteKingLocation = (move.startRow, move.startCol)
             
     '''
     Generate all moves considering given checks
     '''
     def getValidMoves(self):
-        return self.getAllPossibleMoves()
+        # 1. Generate all possible moves 
+        moves = self.getAllPossibleMoves()
+        # 2. For each move, make a move 
+        for i in range(len(moves) - 1, -1, -1): # When removing from a list, go backwards through the list
+            self.makeMove(moves[i])
+            # 3. Generate all opponents moves
+        return moves
     
     '''
     Generate all moves without considering checks
