@@ -173,7 +173,7 @@ class GameState():
         for d in range(8):
             endRow = row + directions[d][0]
             endCol = column + directions[d][1]
-            if 0 <= endRow < 8 and 0 <= endCol < 0:
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endPiece = self.board[endRow][endCol]
                 if endPiece[0] != allyColor:
                     moves.append(Move((row, column), (endRow, endCol), self.board))
