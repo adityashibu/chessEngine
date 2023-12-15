@@ -59,6 +59,14 @@ class GameState():
                         self.getPawnMoves(row, column, moves)
                     elif piece == 'R':
                         self.getRookMoves(row, column, moves)
+                    elif piece == 'N':
+                        self.getKnightMoves(row, column, moves)
+                    elif piece == 'B':
+                        self.getBishopMoves(row, column, moves)
+                    elif piece == 'Q':
+                        self.getQueenMoves(row, column, moves)
+                    elif piece == 'K':
+                        self.getKingMoves(row, column, moves)
         return moves
                         
     '''
@@ -95,7 +103,7 @@ class GameState():
     Get all the possible Rook moves located at the given row and column and add them to the moves list
     '''
     def getRookMoves(self, row, column, moves):
-        directions = ((-1, 0), (0, -1), (1, 0), (0, 1))
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1)) # Up, Left, Down, Right
         enemyColor = "b" if self.whiteToMove else "w"
         for d in directions:
             for i in range(1, 8):
@@ -105,14 +113,72 @@ class GameState():
                     endPiece = self.board[endRow][endCol]
                     if endPiece == "--": # If the ending position is empty then it's a valid move
                         moves.append(Move((row, column), (endRow, endCol), self.board))
-                    elif endPiece[0] == enemyColor:
+                    elif endPiece[0] == enemyColor: # If there is a element on the given end position then capture it as it's a valid move
                         moves.append(Move((row, column), (endRow, endCol), self.board))
                         break
-                    else:
+                    else: # If it's none of the above cases then it means it's not a valid move so just break
                         break 
-                else:
+                else: # If the rook is not on the board, then just break out of the loop
                     break
+                
+    '''
+    Get all the possible Knight moves located at the given row and column and add them to the moves list
+    '''
+    def getKnightMoves(self, row, column, moves):
+        directions = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for d in directions:
+            endRow = row + d[0]
+            endCol = column + d[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor: # If it's not an ally color then it's a valid move
+                    moves.append(Move((row, column), (endRow, endCol), self.board))
+    
+    '''
+    Get all the possible Bishop moves located at the given row and column and add them to the moves list
+    '''
+    def getBishopMoves(self, row, column, moves):
+        directions = ((-1, -1), (-1, 1), (1, -1), (1, 1)) # Up, Left, Down, Right
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1, 8):
+                endRow = row + d[0] * i 
+                endCol = column + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8: # Basically ensures that the rook moves on the board
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--": # If the ending position is empty then it's a valid move
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColor: # If there is a element on the given end position then capture it as it's a valid move
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
+                        break
+                    else: # If it's none of the above cases then it means it's not a valid move so just break
+                        break 
+                else: # If the rook is not on the board, then just break out of the loop
+                    break
+                
+    '''
+    Get all the possible Queen moves located at the given row and column and add them to the moves list
+    '''
+    def getQueenMoves(self, row, column, moves): # Because the queen is just a combination of bishop and rook (ie front and diagonal moves)
+        self.getRookMoves(row, column, moves)
+        self.getBishopMoves(row, column, moves)
         
+    '''
+    Get all the possible King moves located at the given row and column and add them to the moves list
+    '''
+    def getKingMoves(self, row, column, moves):
+        directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for d in range(8):
+            endRow = row + directions[d][0]
+            endCol = column + directions[d][1]
+            if 0 <= endRow < 8 and 0 <= endCol < 0:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((row, column), (endRow, endCol), self.board))
+    
+    
          
 class Move():
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4,
