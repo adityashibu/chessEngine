@@ -60,7 +60,7 @@ def main():
                     playerClicks.append(sqSelected) # Append the positions for both the first and the second click
                 if len(playerClicks) == 2:
                     move = Move(playerClicks[0], playerClicks[1], gs.board)
-                    print(move.getChessNotation())
+                    # print(move.getChessNotation())
                     if move in validMoves:
                         gs.makeMove(move)
                         moveMade = True
