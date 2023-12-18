@@ -59,11 +59,14 @@ class GameState():
         for i in range(len(moves) - 1, -1, -1): # When removing from a list, go backwards through the list
             self.makeMove(moves[i])
             # 3. Generate all opponents moves
-            oppMoves = self.getAllPossibleMoves()
             # 4. For each of your opponents moves, see if they attack your king
+            self.whiteToMove = not self.whiteToMove
+            if self.inCheck(): # Both of the above functions are performed by inCheck
+                # 5. If they do then attack your king, then it's not a valid move 
+                moves.remove(moves[i])       
+            self.whiteToMove = not self.whiteToMove
+            self.undo() 
             
-            
-        # 5. If they do then attack your king, then it's not a valid move        
         return moves
     
     '''
@@ -78,8 +81,14 @@ class GameState():
     '''
     Determine if the enemy can attack the square at given row and column
     '''
-    def squareUnderAttack(self):
-        pass
+    def squareUnderAttack(self, row, column):
+        self.whiteToMove = not self.whiteToMove # Switch to opponents point of view
+        oppMoves = self.getAllPossibleMoves()
+        self.whiteToMove = not self.whiteToMove
+        for move in oppMoves:
+            if move.endRow == row and move.endCol == column: # Square is under attack
+                return True
+        return False
     
     '''
     Generate all moves without considering checks
@@ -184,7 +193,7 @@ class GameState():
                 endRow = row + d[0] * i 
                 endCol = column + d[1] * i
                 if 0 <= endRow < 8 and 0 <= endCol < 8: # Basically ensures that the rook moves on the board
-                    endPiece = self.board[endRow][endCol]
+                    endPiece = self.board[endRow]
                     if endPiece == "--": # If the ending position is empty then it's a valid move
                         moves.append(Move((row, column), (endRow, endCol), self.board))
                     elif endPiece[0] == enemyColor: # If there is a element on the given end position then capture it as it's a valid move
