@@ -33,6 +33,9 @@ class GameState():
             self.whiteKingLocation = (move.endRow, move.endCol)
         elif move.pieceMoved == 'bK':
             self.whiteKingLocation = (move.endRow, move.endCol)
+            
+        if move.isPawnPromotion:
+            self.board[move.endRow][move.endCol] = move.pieceMoved[0] + 'Q'
         
     '''
     Undo the last move performed
@@ -193,7 +196,7 @@ class GameState():
                 endRow = row + d[0] * i 
                 endCol = column + d[1] * i
                 if 0 <= endRow < 8 and 0 <= endCol < 8: # Basically ensures that the rook moves on the board
-                    endPiece = self.board[endRow]
+                    endPiece = self.board[endRow][endCol]
                     if endPiece == "--": # If the ending position is empty then it's a valid move
                         moves.append(Move((row, column), (endRow, endCol), self.board))
                     elif endPiece[0] == enemyColor: # If there is a element on the given end position then capture it as it's a valid move
@@ -242,6 +245,10 @@ class Move():
         self.endCol = endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.isPawnPromotion = False
+        self.promotionChoice = 'Q'
+        if (self.pieceMoved == 'wP' and self.endRow == 0) or (self.pieceMoved == 'bP' and self.endRow == 7):
+            self.isPawnPromotion = True
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol # Generate a unique move ID for every move
         # print(self.moveID)
         
