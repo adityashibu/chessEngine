@@ -22,6 +22,8 @@ class GameState():
         self.moveLog = []
         self.whiteKingLocation = (7, 4) # Location to check if the king has been checkmated
         self.blackKingLocation = (0, 4)
+        self.checkMate = False
+        self.staleMate = False
         
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -69,7 +71,15 @@ class GameState():
                 moves.remove(moves[i])       
             self.whiteToMove = not self.whiteToMove
             self.undo() 
-            
+        if len(moves) == 0: # Either checkmate or stalemate
+            if self.inCheck():
+                self.checkMate = True
+            else:
+                self.staleMate = True
+        else:
+            self.checkMate = False
+            self.staleMate = False
+
         return moves
     
     '''
